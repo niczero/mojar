@@ -1,9 +1,11 @@
 # Mojar
 
-A small booster pack for Mojolicious, written with similar principles to
-Mojolicious itself.  A key requirement for all included code is a small
-filesystem footprint, with minimal dependencies outside of perl core and
-Mojolicious.
+A small booster pack for Mojolicious.
+The (soft) criteria are
+*   Filesystem footprint kept small.
+*   Number of package dependencies kept low.
+*   XS files avoided where practical.
+*   Non-linux platforms (incl Strawberry Perl) supported where practical.
 
 ## Features
 
@@ -27,3 +29,14 @@ and perl closures.  (This fork is compatible with Mojolicious v3.)
 
     A fork of IPC::Run; provides portable execution of external commands and
 perl closures.  (This fork has provision for perl closures.)
+
+*   Mojar::Google::Analytics
+
+    http://niczero.github.com/mojar-google-analytics/
+
+    An extension to facilitate read access to a GA service account.  (Currently
+only blocking connections are supported.)
+
+## Status
+
+Pre-alpha, please come back later or discuss on irc.
