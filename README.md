@@ -1,6 +1,6 @@
 # Mojar
 
-A small booster pack for Mojolicious.
+A small booster pack for Mojolicious focused on integration.
 The (soft) criteria are
 *   Filesystem footprint kept small.
 *   Number of package dependencies kept low.
@@ -15,28 +15,27 @@ The (soft) criteria are
 an easy upgrade path to CHI when better performance or richer functionality is
 required.
 
-*   Mojar::Cache::Simple
+*   Mojar::Util
 
-    A specialisation of Mojar::Cache with an upper limit on the quantity of
-keys stored; once the limit is exceeded, the oldest key is deleted.
+    A small set of utility functions.
 
-*   Mojolicious::Plugin::Run
+## See also
 
-    A fork of MojoX::Run; provides asynchronous execution of external commands
-and perl closures.  (This fork is compatible with Mojolicious v3.)
+The real content is split out into separate distributions.
 
-*   Mojolicious::Plugin::Run::Open3
+*   Mojar::Mysql
 
-    A fork of IPC::Run; provides portable execution of external commands and
-perl closures.  (This fork has provision for perl closures.)
+    A set of interfaces for working with MySQL databases, of most use to those
+working with more than one server.
 
 *   Mojar::Google::Analytics
 
-    http://niczero.github.com/mojar-google-analytics/
+    Interface for easy (unattended) collection of reporting data.
 
-    An extension to facilitate read access to a GA service account.  (Currently
-only blocking connections are supported.)
+*   Mojar::Cron
 
-## Status
+    Interface for cron calculations.
 
-Pre-alpha, please come back later or discuss on irc.
+*   Mojar::BulkSms
+
+    Interface to popular SMS sending service.

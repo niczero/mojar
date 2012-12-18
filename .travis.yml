@@ -1,0 +1,12 @@
+language: perl
+perl:
+  - "5.16"
+  - "5.14"
+  - "5.12"
+  - "5.10"
+before_script:
+    - cpanm Test::Pod  # optional dependency
+notifications:
+  email:
+    on_success: change
+    on_failure: always

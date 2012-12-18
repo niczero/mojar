@@ -1,11 +1,13 @@
+# ============
 package Mojar::Util;
+# ============
 use Mojo::Base 'Exporter';
 
-our $VERSION = '0.010';
-
 our @EXPORT_OK = (qw(
-    detitlecase titlecase transcribe
+  detitlecase titlecase transcribe hash_or_hashref
 ));
+
+use Scalar::Util ();
 
 # ------------
 # Public functions
@@ -94,8 +96,32 @@ sub transcribe {
   return $parts->[0] // '';
 }
 
-1;
+sub hash_or_hashref {
+  return undef unless @_;
+  return $_[0] if @_ == 1 && ref $_[0] eq 'HASH';  # hashref
+  return { @_ } if @_ % 2 == 0;  # hash
+  return $_[0] if @_ == 1 && Scalar::Util::reftype $_[0] eq 'HASH';  # obj
+  die sprintf 'Hash not identified (%s)', join ',', @_;
+}
+
+1
 __END__
+
+=head1 NAME
+
+Mojar::Util - General utility functions
+
+=head1 SYNOPSIS
+
+  use Mojar::Util 'transcribe';
+
+  my $replaced = transcribe $original, '_' => '-', '-' => '_';
+
+=head1 DESCRIPTION
+
+Miscellaneous utility functions.
+
+=head1 FUNCTIONS
 
 =head2 C<detitlecase>
 
@@ -144,5 +170,16 @@ Convert snake-case string to hyphenated lowercase, with optional additional tran
       transcribe $url_path, '/' => '::', sub { titlecase $_[0] => '-' };
 
   my $with_separators_swapped = transcribe $string, '_' => '-', '-' => '_';
+
+=head1 RATIONALE
+
+Mojo::Util is packed with useful functions, but I kept hitting occasions when I
+needed to transcribe characters in the result or apply my own de/titlecase.
+With the functions here I get to use Mojo::Util more widely but I also find them
+useful independently.
+
+=head1 SEE ALSO
+
+L<Mojo::Util>, L<String::Util>.
 
 =cut

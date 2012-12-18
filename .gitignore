@@ -1,14 +1,5 @@
-.*
-*~
-!.gitignore
-!.perltidyrc
-blib
+.session
 data
 dep
 mod
-nytprof.out
-pm_to_blib
 Makefile
-MANIFEST*
-!MANIFEST.SKIP
-*META.yml
