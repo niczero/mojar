@@ -30,7 +30,7 @@ working with more than one server.
 
 *   Mojar::Google::Analytics
 
-    Interface for easy (unattended) collection of reporting data.
+    Interface for easy (unattended) downloading of reporting data.
 
 *   Mojar::Cron
 
