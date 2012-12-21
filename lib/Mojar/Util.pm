@@ -4,7 +4,7 @@ package Mojar::Util;
 use Mojo::Base 'Exporter';
 
 our @EXPORT_OK = (qw(
-  detitlecase titlecase transcribe hash_or_hashref
+  detitlecase titlecase transcribe slurp spurt hash_or_hashref
 ));
 
 use Scalar::Util ();
@@ -87,13 +87,29 @@ sub transcribe {
       }
       else {
         # Children all strings => join them
-        @$ref = join $joiners[$depth], map $_->[0], @$ref;
+        @$ref = join $joiners[$depth], map +($_->[0] //= ''), @$ref;
       }
     }
     # else string => do nothing
   }
 
   return $parts->[0] // '';
+}
+
+sub slurp ($) {
+  my $path = shift;
+  die qq{Can't open file "$path": $!} unless open my $file, '<', $path;
+  my $content = '';
+  while ($file->sysread(my $buffer, 131072, 0)) { $content .= $buffer }
+  return $content;
+}
+
+sub spurt {
+  my ($path, @content) = @_;
+  die qq{Can't open file "$path": $!} unless open my $file, '>', $path;
+  my $string = join '', @content;
+  die qq{Can't write to file "$path": $!} unless $file->syswrite($string);
+  return $string;
 }
 
 sub hash_or_hashref {
@@ -170,6 +186,18 @@ Convert snake-case string to hyphenated lowercase, with optional additional tran
       transcribe $url_path, '/' => '::', sub { titlecase $_[0] => '-' };
 
   my $with_separators_swapped = transcribe $string, '_' => '-', '-' => '_';
+
+=head2 C<spurt>
+
+  my $written_string = spurt $path, @content;
+
+  spurt '/tmp/test.txt', "Some\ntext\n";
+  spurt '/tmp/test.txt', "More\n", "text\n";  # overwrites previous content
+
+Similar to L<Mojo::Util>::spurt but with opposite argument order and accepting
+list of content.  If passed a list, it joins the parts together before writing.
+
+  ->syswrite(join '', @content)
 
 =head1 RATIONALE
 

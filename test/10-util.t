@@ -1,7 +1,9 @@
 use Mojo::Base -strict;
-
 use Test::More;
-use Mojar::Util qw( detitlecase titlecase transcribe );
+
+use File::Temp 'tempdir';
+use File::Spec::Functions 'catfile';
+use Mojar::Util qw(detitlecase slurp spurt titlecase transcribe);
 
 subtest q{detitlecase} => sub {
   is +(detitlecase 'FooBar'), 'foo_bar', 'FooBar';
@@ -67,6 +69,15 @@ subtest q{transcribe} => sub {
         '/' => '::', '?' => '::_', '=1' => '',
         sub { titlecase $_[0] }),
       'Admin::User::ProfilePerm::_Safe', q{url_path -> class};
+};
+
+subtest q{transcribe} => sub {
+  my $dir = tempdir CLEANUP => 1;
+  my $path = catfile $dir, 'test.txt';
+  ok !! spurt $path, "Some\ntext\n";
+  is slurp $path, "Some\ntext\n", 'same text back';
+  ok !! spurt $path, "More\n", "lines\n";
+  is slurp $path, "More\nlines\n", 'same text back';
 };
 
 done_testing();

@@ -1,3 +1,5 @@
+.bzr
+.bzrignore
 .session
 data
 dep
