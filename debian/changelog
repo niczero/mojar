@@ -1,8 +1,9 @@
 libmojar-perl (0.015) squeeze; urgency=low
 
   * Added Mojo::Util::dump
+  * Removed Mojo::Util::slurp
 
- -- Nic Sandfield <niczero@cpan.org>  Fri, 21 Dec 2012 13:48:01 +0000
+ -- Nic Sandfield <niczero@cpan.org>  Mon, 31 Dec 2012 19:11:02 +0000
 
 libmojar-perl (0.014) squeeze; urgency=low
 
