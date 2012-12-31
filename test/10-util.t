@@ -3,7 +3,9 @@ use Test::More;
 
 use File::Temp 'tempdir';
 use File::Spec::Functions 'catfile';
-use Mojar::Util qw(detitlecase slurp spurt titlecase transcribe);
+use Mojar::Util qw(detitlecase dumper hash_or_hashref spurt titlecase
+    transcribe);
+use Mojo::Util 'slurp';
 
 subtest q{detitlecase} => sub {
   is +(detitlecase 'FooBar'), 'foo_bar', 'FooBar';
@@ -75,9 +77,32 @@ subtest q{transcribe} => sub {
   my $dir = tempdir CLEANUP => 1;
   my $path = catfile $dir, 'test.txt';
   ok !! spurt $path, "Some\ntext\n";
-  is slurp $path, "Some\ntext\n", 'same text back';
+  is slurp($path), "Some\ntext\n", 'same text back';
   ok !! spurt $path, "More\n", "lines\n";
-  is slurp $path, "More\nlines\n", 'same text back';
+  is slurp($path), "More\nlines\n", 'same text back';
+};
+
+subtest q{dumper} => sub {
+  is dumper(undef), "undef", 'undef';
+  is dumper('Abc'), "'Abc'", 'string';
+  is dumper(1.23), "'1.23'", 'numeric';
+  is dumper({A => 1}), "{\n  'A' => 1\n}", 'simple hashref';
+  my $abc = [qw(A B C)];
+  is dumper($abc), "[\n  'A',\n  'B',\n  'C'\n]", 'simple arrayref';
+  my $abc_r = \$abc;
+  is dumper($abc_r), "\\[\n    'A',\n    'B',\n    'C'\n  ]", 'arrayrefref';
+  is dumper(\$abc_r), "\\\\[\n      'A',\n      'B',\n      'C'\n    ]",
+      'arrayrefrefref';
+  is dumper('Abc', $abc), "'Abc',\n[\n  'A',\n  'B',\n  'C'\n]", 'list';
+};
+
+subtest q{hash_or_hashref} => sub {
+  is dumper(hash_or_hashref()), "{}", 'no args';
+  is dumper(hash_or_hashref {A => 1}), "{\n  'A' => 1\n}", 'no args';
+  is dumper(hash_or_hashref B => 2), "{\n  'B' => 2\n}", 'no args';
+  my $o = bless {} => 'UNIVERSAL';
+  ok $o->isa('UNIVERSAL'), 'test object constructed ok';
+  is_deeply hash_or_hashref($o), $o, 'object';
 };
 
 done_testing();

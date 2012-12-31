@@ -4,10 +4,10 @@ package Mojar::Util;
 use Mojo::Base 'Exporter';
 
 our @EXPORT_OK = (qw(
-  detitlecase titlecase transcribe slurp spurt hash_or_hashref
+  detitlecase dumper hash_or_hashref spurt titlecase transcribe
 ));
 
-use Scalar::Util ();
+use Scalar::Util ();  # reftype
 
 # ------------
 # Public functions
@@ -96,14 +96,6 @@ sub transcribe {
   return $parts->[0] // '';
 }
 
-sub slurp ($) {
-  my $path = shift;
-  die qq{Can't open file "$path": $!} unless open my $file, '<', $path;
-  my $content = '';
-  while ($file->sysread(my $buffer, 131072, 0)) { $content .= $buffer }
-  return $content;
-}
-
 sub spurt {
   my ($path, @content) = @_;
   die qq{Can't open file "$path": $!} unless open my $file, '>', $path;
@@ -113,11 +105,26 @@ sub spurt {
 }
 
 sub hash_or_hashref {
-  return undef unless @_;
-  return $_[0] if @_ == 1 && ref $_[0] eq 'HASH';  # hashref
   return { @_ } if @_ % 2 == 0;  # hash
-  return $_[0] if @_ == 1 && Scalar::Util::reftype $_[0] eq 'HASH';  # obj
-  die sprintf 'Hash not identified (%s)', join ',', @_;
+  return $_[0] if ref $_[0] eq 'HASH' || Scalar::Util::reftype $_[0] eq 'HASH';
+  require Carp;
+  Carp::croak(sprintf 'Hash not identified (%s)', join ',', @_);
+}
+
+sub dumper {
+  my ($arg, $level) = (@_ > 1) ? ([ @_ ], 1) : (shift, undef);
+  require Data::Dumper;
+  my $dump = Data::Dumper::Dumper($arg);
+  $dump =~ s/^\$VAR1 = //;
+  $dump =~ s/;\n\z//;
+  $dump =~ s/^\s{8}//mg;
+  $dump =~ s/\$VAR1/TOP/g;
+  if ($level) {
+    $dump =~ s/^\[\s//;
+    $dump =~ s/\n\s*\]$//;
+    $dump =~ s/^\s{2}//mg;
+  }
+  return $dump;
 }
 
 1
@@ -199,15 +206,36 @@ list of content.  If passed a list, it joins the parts together before writing.
 
   ->syswrite(join '', @content)
 
+=head2 C<dumper>
+
+  say dumper $object;
+  print dumper($object), "\n";
+  $log->debug(dumper $hashref, $arrayref, $string, $numeric);
+
+Based on Data::Dumper it is simply a tidied (post-processed) version.  It is
+argument-greedy and if passed more than one argument will wrap them in an
+arrayref and then later strip away that dummy layer.  In the resulting string,
+"TOP" refers to the top-most (single, possibly invisible) entity.
+
+=head2 C<hash_or_hashref>
+
+  my $hashref = hash_or_hashref({ A => 1, B => 2 });
+  my $hashref = hash_or_hashref($object);
+  my $hashref = hash_or_hashref(A => 1, B => 2);
+  my $hashref = hash_or_hashref();
+
+Takes care of those cases where you want to handle hashes or hashrefs.  Always
+gives a hashref if it can, otherwise dies.
+
 =head1 RATIONALE
 
 Mojo::Util is packed with useful functions, but I kept hitting occasions when I
 needed to transcribe characters in the result or apply my own de/titlecase.
-With the functions here I get to use Mojo::Util more widely but I also find them
-useful independently.
+With the functions here I get to use Mojo::Util more widely but I also find
+these useful independently.
 
 =head1 SEE ALSO
 
-L<Mojo::Util>, L<String::Util>.
+L<Mojo::Util>, L<String::Util>, L<Data::Dump>.
 
 =cut
