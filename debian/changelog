@@ -1,4 +1,4 @@
-libmojar-perl (0.016) squeeze; urgency=low
+libmojar-perl (0.017) squeeze; urgency=low
 
   * Tweaked .travis.yml
   * Added LICENSE, MANIFEST.SKIP
