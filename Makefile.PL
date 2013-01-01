@@ -11,7 +11,7 @@ WriteMakefile(
   AUTHOR       => 'Nic Sandfield <niczero@cpan.org>',
   LICENSE      => 'artistic_2',
   META_MERGE   => {
-    requires  => { perl => '5.010001', Mojolicious => '3.33' },
+    requires  => { perl => 5.010001, Mojolicious => 3.33 },
     resources => {
       homepage    => 'http://mojar.alwaysdata.com/',
       license     => 'http://www.opensource.org/licenses/artistic-license-2.0',
@@ -22,9 +22,7 @@ WriteMakefile(
   },
   BUILD_REQUIRES => { 'Test::More' => '0' },
   CONFIGURE_REQUIRES => { 'ExtUtils::MakeMaker' => '6.30' },
-  PREREQ_PM => {
-    'Mojolicious' => '3.33'
-  },
+  PREREQ_PM => { Mojolicious => 3.33 },
   EXE_FILES => [],
   test => { TESTS => 'test/*.t' }
 );

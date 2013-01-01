@@ -1,7 +1,7 @@
 package Mojar;
 use Mojo::Base -strict;
 
-our $VERSION = 0.015;
+our $VERSION = 0.016;
 
 1
 __END__
@@ -41,6 +41,8 @@ Calculate when the next instance should run.
 =item Mojar::BulkSms
 
 Send (unattended) SMS via the net service.
+
+=back
 
 =head1 SUPPORT
 

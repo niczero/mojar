@@ -1,3 +1,9 @@
+libmojar-perl (0.016) squeeze; urgency=low
+
+  * Fixed POD bug
+
+ -- Nic Sandfield <niczero@cpan.org>  Tue, 01 Jan 2013 01:04:03 +0000
+
 libmojar-perl (0.015) squeeze; urgency=low
 
   * Added Mojo::Util::dump
