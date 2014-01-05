@@ -1,5 +1,9 @@
 ^\.
-^Makefile$
-^MYMETA\.
 ^blib
+^debian
+^dep
+^Makefile$
+^Makefile\.old$
+^MANIFEST
+^MYMETA\.
 ^pm_to_blib

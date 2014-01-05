@@ -1,7 +1,4 @@
-.bzr
-.bzrignore
 .session
 data
 dep
-mod
 Makefile
