@@ -1,0 +1,10 @@
+
+1.016 2014-01-15
+  * Tidied packaging.
+  * Added sample/test config file.
+  * Added copyright statements (Mojar).
+
+1.001 2013-07-17
+  * Improved packaging.
+  * Extended tests (Log).
+  * Fixed bug where use-time params were ignored (Log).

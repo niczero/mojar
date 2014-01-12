@@ -1,26 +1,33 @@
-libmojar-perl (0.017) squeeze; urgency=low
+libmojar-perl (1.016) wheezy; urgency=low
 
+  * Tidied packaging.
+  * Added sample/test config file.
+  * Added copyright statements (Mojar).
+
+ -- Nic Sandfield <niczero@cpan.org>  Sun, 15 Jan 2014 20:12 +0000
+
+libmojar-perl (1.001) wheezy; urgency=low
+
+  * Improved packaging.
+  * Extended tests for Mojar::Log.
+  * Fixed bug in Mojar::Log where use-time params were ignored.
+
+ -- Nic Sandfield <niczero@cpan.org>  Wed, 17 Jul 2013 19:37 +0100
+
+libmojar-perl (0.020) squeeze; urgency=low
+
+  * Reduced quotes and indentation (Util)
   * Tweaked .travis.yml
   * Added LICENSE, MANIFEST.SKIP
+  * Fixed POD bug (Mojar)
+  * Added dumper (Util)
+  * Removed slurp (Util)
 
- -- Nic Sandfield <niczero@cpan.org>  Tue, 01 Jan 2013 14:39:04 +0000
-
-libmojar-perl (0.016) squeeze; urgency=low
-
-  * Fixed POD bug
-
- -- Nic Sandfield <niczero@cpan.org>  Tue, 01 Jan 2013 01:04:03 +0000
-
-libmojar-perl (0.015) squeeze; urgency=low
-
-  * Added Mojo::Util::dump
-  * Removed Mojo::Util::slurp
-
- -- Nic Sandfield <niczero@cpan.org>  Mon, 31 Dec 2012 19:11:02 +0000
+ -- Nic Sandfield <niczero@cpan.org>  Mon, 31 Dec 2012 19:11 +0000
 
 libmojar-perl (0.014) squeeze; urgency=low
 
-  * Added Mojo::Util::{slurp,spurt}
+  * Added slurp,spurt (Util)
 
- -- Nic Sandfield <niczero@cpan.org>  Fri, 21 Dec 2012 13:48:01 +0000
+ -- Nic Sandfield <niczero@cpan.org>  Fri, 21 Dec 2012 21:48 +0000
 

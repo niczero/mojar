@@ -1,3 +1,5 @@
+*.old
+*.tmp
 .session
 data
 dep

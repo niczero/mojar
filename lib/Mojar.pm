@@ -1,9 +1,9 @@
 package Mojar;
 use Mojo::Base -strict;
 
-our $VERSION = 0.017;
+our $VERSION = 1.016;
 
-1
+1;
 __END__
 
 =head1 NAME
@@ -14,6 +14,7 @@ Mojar - Integration toolkit
 
   use Mojar::Util q(detitlecase titlecase);
   use Mojar::Cache;
+  use Mojar::Log;
 
 =head1 DESCRIPTION
 
@@ -32,7 +33,7 @@ analysis.
 
 =item Mojar::Google::Analytics
 
-Supports unattended logins and data extraction for reporting.
+Draw down your web analytics data for reporting.
 
 =item Mojar::Cron
 
@@ -48,7 +49,7 @@ Send (unattended) SMS via the net service.
 
 =head2 IRC
 
-C<#mojo> on C<irc.perl.org>
+C<nic> at C<#mojo> on C<irc.perl.org>
 
 =head2 WIKI
 
@@ -62,16 +63,20 @@ L<http://github.com/niczero/mojar>
 
 =head1 RATIONALE
 
-Mojolicious is an awesome web application framework that just so happens to be
-the foundation of a fabulous web integration platform.  The intention of Mojar
-is to provide pluggable classes that extend the same philosophies while getting
-you closer to connecting to third-party services.
+Mojolicious is an awesome web application framework that includes many great
+building blocks even for non-web development and integration.  The intention of
+Mojar is to provide pluggable classes that extend the same philosophies while
+getting you closer to connecting to third-party services.
 
 =head1 COPYRIGHT AND LICENCE
 
-Copyright (C) 2012, Nic Sandfield.
+Copyright (C) 2008--2012, Sebastian Riedel.
+Copyright (C) 2012--2013, Nic Sandfield.
 
 This program is free software, you can redistribute it and/or modify it under
 the terms of the Artistic License version 2.0.
+
+All of this code is inspired by Mojolicious and the great work of Sebastian
+Riedel.  In particular ::Config is a direct fork of its Mojolicious counterpart.
 
 =cut
