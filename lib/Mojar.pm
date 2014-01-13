@@ -1,7 +1,7 @@
 package Mojar;
 use Mojo::Base -strict;
 
-our $VERSION = 1.016;
+our $VERSION = 1.021;
 
 1;
 __END__
@@ -22,7 +22,7 @@ A bag of tools for integrating to various APIs.  Most of the tools are provided
 in separate distributions to continue the theme of keeping your footprint small.
 All rely on having a fairly recent release of Mojolicious installed.
 
-=head2 DISTRIBUTIONS
+=head1 DISTRIBUTIONS
 
 =over 4
 
@@ -39,10 +39,6 @@ Draw down your web analytics data for reporting.
 
 Calculate when the next instance should run.
 
-=item Mojar::BulkSms
-
-Send (unattended) SMS via the net service.
-
 =back
 
 =head1 SUPPORT
@@ -51,7 +47,7 @@ Send (unattended) SMS via the net service.
 
 C<nic> at C<#mojo> on C<irc.perl.org>
 
-=head2 WIKI
+=head2 Wiki
 
 L<https://github.com/niczero/mojar/wiki>
 
@@ -65,18 +61,18 @@ L<http://github.com/niczero/mojar>
 
 Mojolicious is an awesome web application framework that includes many great
 building blocks even for non-web development and integration.  The intention of
-Mojar is to provide pluggable classes that extend the same philosophies while
+Mojar is to provide pluggable classes that extend the same approach while
 getting you closer to connecting to third-party services.
 
 =head1 COPYRIGHT AND LICENCE
 
 Copyright (C) 2008--2012, Sebastian Riedel.
-Copyright (C) 2012--2013, Nic Sandfield.
+Copyright (C) 2012--2014, Nic Sandfield.
 
 This program is free software, you can redistribute it and/or modify it under
 the terms of the Artistic License version 2.0.
 
 All of this code is inspired by Mojolicious and the great work of Sebastian
-Riedel.  In particular ::Config is a direct fork of its Mojolicious counterpart.
+Riedel.  In particular Config is a direct fork of its Mojolicious counterpart.
 
 =cut

@@ -1,20 +1,16 @@
-# ============
 package Mojar::Cache;
-# ============
 use Mojo::Base -base;
 
-# ------------
 # Attributes
-# ------------
 
-has max_keys => 0;
 has namespace => 'main';
-has 'on_get_error';
-has 'on_set_error';
+has on_get_error => sub { sub { require Carp; Carp::croak @_ } };
+has on_set_error => sub { sub { require Carp; Carp::croak @_ } };
 
-# ------------
+has slots => sub { [] };
+has 'max_keys';
+
 # Public methods
-# ------------
 
 sub new {
   my ($proto, %param) = @_;
@@ -27,18 +23,42 @@ sub new {
 
 sub get {
   my ($self, $key) = @_;
-  return $self->{store}{ $self->namespace }{$key};
+  my $value;
+  eval {
+    $value = $self->{store}{$self->namespace}{$key};
+    1;
+  }
+  or do {
+    my $e = $@ // 'Failed get';
+    $self->on_get_error->($e);
+  };
+  return $value;
 }
 
 sub set {
   my ($self, $key, $value) = @_;
-  $self->{store}{ $self->namespace }{$key} = $value;
+  eval {
+    my $slots = $self->slots;
+    unless ($self->is_valid($key)) {
+      push @$slots, $key;
+      while ($self->max_keys and scalar @$slots > $self->max_keys) {
+        # Too many in the bed
+        $self->remove(shift @$slots);
+      }
+    }
+    $self->{store}{$self->namespace}{$key} = $value;
+    1;
+  }
+  or do {
+    my $e = $@ // 'Failed set';
+    $self->on_set_error->($e);
+  };
   return $self;
 }
 
 sub compute {
   my ($self, $key, $code) = @_;
-  my $cache = $self->{store}{ $self->namespace };
+  my $cache = $self->{store}{$self->namespace};
   return $cache->{$key} if exists $cache->{$key};
 
   my $value = $code->($key);
@@ -50,7 +70,7 @@ sub compute {
 
 sub remove {
   my ($self, $key) = @_;
-  delete $self->{store}{ $self->namespace }{$key};
+  delete $self->{store}{$self->namespace}{$key};
   return $self;
 }
 
@@ -58,14 +78,14 @@ sub remove {
 
 sub is_valid {
   my ($self, $key) = @_;
-  return exists $self->{store}{ $self->namespace }{$key};
+  return exists $self->{store}{$self->namespace}{$key};
 }
 
 # Atomic operations
 
 sub append {
   my ($self, $key, $further_text) = @_;
-  $self->{store}{ $self->namespace }{$key} .= $further_text;
+  $self->{store}{$self->namespace}{$key} .= $further_text;
   return $self;
 }
 
@@ -73,23 +93,23 @@ sub append {
 
 sub clear {
   my $self = shift;
-  $self->{store}{ $self->namespace } = {};
+  $self->{store}{$self->namespace} = {};
   return $self;
 }
 
-sub get_keys { my $self = shift; return keys %{ $self->{store}{ $self->namespace } }; }
+sub get_keys { keys %{ $_[0]{store}{$_[0]->namespace} } }
 
 # Multiple key/value operations
 
 sub get_multi_arrayref {
   my ($self, $keys_ref) = @_;
-  my $cache = $self->{store}{ $self->namespace };
+  my $cache = $self->{store}{$self->namespace};
   return [ map $cache->{$_}, @$keys_ref ];
 }
 
 sub get_multi_hashref {
   my ($self, $keys_ref) = @_;
-  my $cache = $self->{store}{ $self->namespace };
+  my $cache = $self->{store}{$self->namespace};
   return { map $_ => $cache->{$_}, @$keys_ref };
 }
 
@@ -107,9 +127,9 @@ sub remove_multi {
   return $self;
 }
 
-sub dump_as_hash { my $self = shift; $self->{store}{ $self->namespace } || {} }
+sub to_hashref { $_[0]{store}{$_[0]->namespace} || {} }
 
-1
+1;
 __END__
 
 =head1 NAME
@@ -134,8 +154,8 @@ L<Mojar::Cache> implements the following attributes.
 
 =head2 C<namespace>
 
-  my $namespace = $cache->namespace;
-  $cache        = $cache->namespace('Admin');
+  $cache->namespace('Admin');
+  $namespace = $cache->namespace;
 
 Namespace for the cache, defaults to C<main>.
 
@@ -155,9 +175,6 @@ Namespace for the cache, defaults to C<main>.
 
 =head1 METHODS
 
-L<Mojar::Cache> inherits all methods from L<Mojar::Base> and implements the
-following new ones.
-
 =head2 C<get>
 
   my $value = $cache->get('foo');
@@ -168,7 +185,7 @@ Get cached value.
 
   $cache = $cache->set(foo => 'bar');
 
-Set cached value.
+Set cache value.
 
 =head1 RATIONALE
 

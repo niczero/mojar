@@ -1,4 +1,8 @@
 
+1.021 2014-01-16
+  * Added on_{get,set}_error (Cache).
+  * Implemented max_keys (Cache).
+
 1.016 2014-01-15
   * Tidied packaging.
   * Added sample/test config file.

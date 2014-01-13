@@ -1,3 +1,10 @@
+libmojar-perl (1.021) wheezy; urgency=low
+
+  * Added on_{get,set}_error (Cache).
+  * Implemented max_keys (Cache).
+
+ -- Nic Sandfield <niczero@cpan.org>  Mon, 16 Jan 2014 20:16 +0000
+
 libmojar-perl (1.016) wheezy; urgency=low
 
   * Tidied packaging.
