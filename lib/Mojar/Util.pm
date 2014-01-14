@@ -1,20 +1,41 @@
-# ============
 package Mojar::Util;
-# ============
 use Mojo::Base 'Exporter';
 
-our @EXPORT_OK = (qw(
-  detitlecase dumper hash_or_hashref spurt titlecase transcribe
-));
+our @EXPORT_OK = qw(
+  dumper hash_or_hashref lc_keys loaded_path merge snakecase spurt transcribe
+  unsnakecase
+);
 
-use Scalar::Util ();  # reftype
+use Scalar::Util 'reftype';
+use Storable 'dclone';
 
-# ------------
+# Private function
+
+sub croak ($) { require Carp; goto &Carp::croak; }
+
 # Public functions
-# ------------
 
-sub detitlecase {
-  my ($string, $syllable_sep, $do_camelcase) = @_;
+sub dumper {
+  no warnings 'once';
+  require Data::Dumper;
+  local $Data::Dumper::Terse = 1;
+  local $Data::Dumper::Indent = 1;
+  local $Data::Dumper::Quotekeys = 0;
+  local $Data::Dumper::Sortkeys = 1;
+  my $dump = Data::Dumper::Dumper(@_);
+  $dump =~ s/\n\z//;
+  return $dump;
+}
+
+sub lc_keys {
+  my ($hr) = @_;
+  croak q{Missing required hr} unless reftype $hr eq 'HASH';
+  %$hr = map +(lc $_ => $$hr{$_}), keys %$hr;
+  return $hr;
+}
+
+sub snakecase {
+  my ($string, $syllable_sep) = @_;
   $syllable_sep //= '_';
   return undef unless defined $string;
   
@@ -23,11 +44,14 @@ sub detitlecase {
   push @words, $1 if $string =~ s/^([^A-Z]+)//;
   # Absorb each titlecase substring
   push @words, lcfirst $1 while $string =~ s/\A([A-Z][^A-Z]*)//;
-  return join $syllable_sep, @words;
+  for (0 .. $#words - 1) {
+    $words[$_] .= $syllable_sep unless $words[$_] =~ /[^a-z]$/;
+  }
+  return join '', @words;
 }
 
-sub titlecase {
-  my ($string, $separator, $do_camelcase) = @_;
+sub unsnakecase {
+  my ($string, $separator, $want_camelcase) = @_;
   $separator //= '_';
   return undef unless defined $string;
   
@@ -35,7 +59,8 @@ sub titlecase {
   # Absorb any leading separators
   push @words, $1 if $string =~ s/\A(\Q$separator\E+)//;
   # Absorb any leading component if doing camelcase
-  if ($do_camelcase and $string =~ s/\A([^\Q$separator\E]+)\Q$separator\E?//) {
+  if ($want_camelcase
+      and $string =~ s/\A([^\Q$separator\E]+)\Q$separator\E?//) {
     push @words, $1;
     push @words, $1 if $string =~ s/\A(\Q$separator\E+)//;
   }
@@ -96,6 +121,19 @@ sub transcribe {
   return $parts->[0] // '';
 }
 
+sub loaded_path {
+  my ($self) = @_;
+  # Try .pm
+  (my $module = (ref $self // $self) .'.pm') =~ s{::}{/};
+  return $INC{$module} if exists $INC{$module};
+
+  # Try .pl
+  $module =~ s{\.pm$}{.pl};
+  return $INC{$module} if exists $INC{$module};
+
+  return undef;
+}
+
 sub spurt {
   my ($path, @content) = @_;
   die qq{Can't open file "$path": $!} unless open my $file, '>', $path;
@@ -106,28 +144,95 @@ sub spurt {
 
 sub hash_or_hashref {
   return { @_ } if @_ % 2 == 0;  # hash
-  return $_[0] if ref $_[0] eq 'HASH' || Scalar::Util::reftype $_[0] eq 'HASH';
-  require Carp;
-  Carp::croak(sprintf 'Hash not identified (%s)', join ',', @_);
+  return $_[0] if ref $_[0] eq 'HASH' or reftype $_[0] eq 'HASH';
+  croak sprintf 'Hash not identified (%s)', join ',', @_;
 }
 
-sub dumper {
-  my ($arg, $level) = (@_ > 1) ? ([ @_ ], 1) : (shift, undef);
-  require Data::Dumper;
-  my $dump = Data::Dumper::Dumper($arg);
-  $dump =~ s/^\$VAR1 = //;
-  $dump =~ s/;\n\z//;
-  $dump =~ s/^\s{8}//mg;
-  $dump =~ s/\$VAR1/TOP/g;
-  if ($level) {
-    $dump =~ s/^\[\s//;
-    $dump =~ s/\n\s*\]$//;
-    $dump =~ s/^\s{2}//mg;
+# Private function
+sub _merge ($;$) {
+  my ($left, $right) = @_;
+  if (reftype $left eq 'ARRAY') {
+    if (reftype $right eq 'ARRAY') {
+      %{$left->[0]} = (%{$left->[0]}, %{ dclone($right->[0]) });
+    }
+    else {
+      # $right : HASHREF
+      %{$left->[0]} = (%{$left->[0]}, %{ dclone($right) });
+    }
   }
-  return $dump;
+  else {
+    # $left : HASHREF
+    if (reftype($right) eq 'ARRAY') {
+      %$left = (%$left, %{ dclone($right->[0]) });
+    }
+    else {
+      # $right : HASHREF
+      %$left = (%$left, %{ dclone($right) });
+    }
+  }
+  return $left;
 }
 
-1
+sub merge (@);
+sub merge (@) {
+  # Both class & object function
+#  my $class = (@_ and not ref $_[0]) ? shift : undef;
+  my $class = shift unless ref $_[0];
+  # defined($class) <=> class method
+  return undef unless @_;
+  my $left = shift;
+
+  # $left is a ref; @right could be various things
+
+  # If called as object method
+  # 'owning' (ie leftmost) object gets modified
+  # If called as class method
+  # a new object is created for the result
+
+  # It is important that the merge associates to the left
+  # [ie ($a merge $b) merge $c], in contrast to Hash::Util::Simple.
+
+  # class method => new object
+  # this is done at most once per original call
+  if ($class) {
+    if ($left->can('clone')) {
+      return merge $left->clone, @_;
+    }
+    elsif ($left->can('new')) {
+      return merge $left->new, @_;
+    }
+    elsif (ref $left eq 'HASH') {
+      $left = dclone($left);
+    }
+    else {
+      croak "Unable to clone first argument\n". dumper $left;
+    }
+  }
+
+  # Base case
+  unless (@_) {
+    return $left;
+  }
+  # Recurse
+  elsif (@_ == 1 and ref $_[0]) {
+    # object or maybe hash ref
+    return _merge($left, $_[0]);
+  }
+  elsif (@_ > 1 and ref $_[0]) {
+    # object or maybe hash ref
+    my $right = shift;
+    return merge _merge($left, $right), @_;
+  }
+  elsif (@_ > 1 and @_ % 2 == 0) {
+    # assume plain hash
+    return _merge($left, { @_ });
+  }
+  else {
+    croak 'Tried to merge incompatible/non-object'. $/ . dumper(@_);
+  }
+}
+
+1;
 __END__
 
 =head1 NAME
@@ -146,55 +251,75 @@ Miscellaneous utility functions.
 
 =head1 FUNCTIONS
 
-=head2 C<detitlecase>
+=head2 snakecase
 
-  my $snakecase = detitlecase $titlecase;
-  my $snakecase = detitlecase $titlecase => $separator;
+  $snakecase = snakecase $titlecase;
+  $snakecase = snakecase $titlecase => $separator;
 
-Convert title-case string to hyphenated lowercase.
+Convert title-case string to snakecase.  Also converts from camelcase.
 
-  # "foo-bar"
-  detitlecase 'FooBar' => '-';
-
-  # "foo-bar::baz"
-  detitlecase 'FooBar::Baz' => '-';
-
+  snakecase 'iFooBar';
   # "i_foo_bar"
-  detitlecase 'iFooBar';
 
-=head2 C<titlecase>
+Rather than using an underscore, a different separator can be specified.
 
-  my $titlecase = titlecase $snakecase;
-  my $titlecase = titlecase $snakecase => $separator;
-  my $titlecase = titlecase $snakecase => $separator, $do_camelcase;
+  snakecase 'FooBar' => '-';
+  # "foo-bar"
 
-Convert snake-case string to hyphenated lowercase, with optional additional translations.
+  snakecase 'FFooBar/BazZoo' => '-';
+  # "f-foo-bar/baz-zoo"
 
+=head2 unsnakecase
+
+  $titlecase = unsnakecase $snakecase;
+  $titlecase = unsnakecase $snakecase => $separator;
+  $titlecase = unsnakecase $snakecase => $separator, $want_camelcase;
+
+Convert snake-case string to titlecase, with optional additional translations.
+
+  unsnakecase 'foo_bar';
   # "FooBar"
-  titlecase 'foo_bar';
 
+  unsnakecase 'foo-bar' => '-';
   # "FooBar"
-  titlecase 'foo-bar' => '-';
 
+An undefined separator defaults to underscore, which is useful when you only
+want to specify a camelcase result.
+
+  unsnakecase 'foo_bar' => undef, 1;
   # "fooBar"
-  titlecase 'foo_bar' => undef, 1;
 
-  # "FooBar_Baz"
-  titlecase 'foo-bar_baz' => '-';
-
+  unsnakecase i_foo_bar => undef, 1;
   # 'iFooBar';
-  titlecase i_foo_bar => undef, 1;
 
-=head2 C<transcribe>
+There is only one level of separator; for more see C<transcribe>.
 
-  my $template_base = transcribe $url_path, '/' => '_';
+  unsnakecase 'foo-bar_baz' => '-';
+  # "FooBar_baz"
 
-  my $controller_class =
-      transcribe $url_path, '/' => '::', sub { titlecase $_[0] => '-' };
+Leading separators pass through.
 
-  my $with_separators_swapped = transcribe $string, '_' => '-', '-' => '_';
+  unsnakecase '--foo-bar' => '-';
+  # "--FooBar"
 
-=head2 C<spurt>
+As do trailing separators.
+
+  unsnakecase '__bar_baz__';
+  # "__BarBaz__"
+
+=head2 transcribe
+
+  $template_base = transcribe $url_path, '/' => '_';
+
+  $controller_class =
+      transcribe $url_path, '/' => '::', sub { unsnakecase $_[0] => '-' };
+
+  $with_separators_swapped = transcribe $string, '_' => '-', '-' => '_';
+
+Repeatedly replaces a character/string with another character/string.  Can even
+swap between values, as shown in that last example.
+
+=head2 spurt
 
   my $written_string = spurt $path, @content;
 
@@ -206,7 +331,7 @@ list of content.  If passed a list, it joins the parts together before writing.
 
   ->syswrite(join '', @content)
 
-=head2 C<dumper>
+=head2 dumper
 
   say dumper $object;
   print dumper($object), "\n";
@@ -217,22 +342,19 @@ argument-greedy and if passed more than one argument will wrap them in an
 arrayref and then later strip away that dummy layer.  In the resulting string,
 "TOP" refers to the top-most (single, possibly invisible) entity.
 
-=head2 C<hash_or_hashref>
+This is intended to be clear and succinct to support error messages and debug
+statements.  It is not suitable for serialising entities because it does not try
+to maintain round trip stability.  (ie Don't try to evaluate its output.)
 
-  my $hashref = hash_or_hashref({ A => 1, B => 2 });
-  my $hashref = hash_or_hashref($object);
-  my $hashref = hash_or_hashref(A => 1, B => 2);
-  my $hashref = hash_or_hashref();
+=head2 hash_or_hashref
 
-Takes care of those cases where you want to handle hashes or hashrefs.  Always
-gives a hashref if it can, otherwise dies.
+  $hashref = hash_or_hashref({ A => 1, B => 2 });
+  $hashref = hash_or_hashref($object);  # $object if hashref-based
+  $hashref = hash_or_hashref(A => 1, B => 2);
+  $hashref = hash_or_hashref();  # {}
 
-=head1 RATIONALE
-
-Mojo::Util is packed with useful functions, but I kept hitting occasions when I
-needed to transcribe characters in the result or apply my own de/titlecase.
-With the functions here I get to use Mojo::Util more widely but I also find
-these useful independently.
+Takes care of those cases where you want to handle both hashes and hashrefs.
+Always gives a hashref if it can, otherwise dies.
 
 =head1 SEE ALSO
 

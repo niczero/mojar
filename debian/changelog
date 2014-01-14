@@ -1,3 +1,13 @@
+
+libmojar-perl (1.031) wheezy; urgency=low
+
+  * Added lc_keys (Util).
+  * Renamed titlecase -> unsnakecase (Util).
+  * Renamed detitlecase -> snakecase (Util).
+  * Reimplemented dumper to use Data::Dumper opts (Util).
+
+ -- Nic Sandfield <niczero@cpan.org>  Mon, 17 Jan 2014 22:20 +0000
+
 libmojar-perl (1.021) wheezy; urgency=low
 
   * Added on_{get,set}_error (Cache).
@@ -37,4 +47,3 @@ libmojar-perl (0.014) squeeze; urgency=low
   * Added slurp,spurt (Util)
 
  -- Nic Sandfield <niczero@cpan.org>  Fri, 21 Dec 2012 21:48 +0000
-
