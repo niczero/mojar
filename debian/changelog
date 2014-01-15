@@ -1,4 +1,12 @@
 
+libmojar-perl (1.041) wheezy; urgency=low
+
+  * Refactored to be a subclass instead of a fork (Log).
+  * Renamed timestamp -> pattern (Log).
+
+ -- Nic Sandfield <niczero@cpan.org>  Wed, 15 Jan 2014 20:08 +0000
+
+
 libmojar-perl (1.031) wheezy; urgency=low
 
   * Added lc_keys (Util).
@@ -6,14 +14,14 @@ libmojar-perl (1.031) wheezy; urgency=low
   * Renamed detitlecase -> snakecase (Util).
   * Reimplemented dumper to use Data::Dumper opts (Util).
 
- -- Nic Sandfield <niczero@cpan.org>  Mon, 17 Jan 2014 22:20 +0000
+ -- Nic Sandfield <niczero@cpan.org>  Tue, 14 Jan 2014 22:20 +0000
 
 libmojar-perl (1.021) wheezy; urgency=low
 
   * Added on_{get,set}_error (Cache).
   * Implemented max_keys (Cache).
 
- -- Nic Sandfield <niczero@cpan.org>  Mon, 16 Jan 2014 20:16 +0000
+ -- Nic Sandfield <niczero@cpan.org>  Mon, 13 Jan 2014 20:16 +0000
 
 libmojar-perl (1.016) wheezy; urgency=low
 
@@ -21,7 +29,7 @@ libmojar-perl (1.016) wheezy; urgency=low
   * Added sample/test config file.
   * Added copyright statements (Mojar).
 
- -- Nic Sandfield <niczero@cpan.org>  Sun, 15 Jan 2014 20:12 +0000
+ -- Nic Sandfield <niczero@cpan.org>  Sun, 12 Jan 2014 20:12 +0000
 
 libmojar-perl (1.001) wheezy; urgency=low
 
