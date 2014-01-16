@@ -1,11 +1,18 @@
 
+libmojar-perl (1.052) wheezy; urgency=low
+
+  * Simplified pragmas when loading configuration (Config).
+  * Extended documentation (Config).
+  * Added new package (ClassShare).
+
+ -- Nic Sandfield <niczero@cpan.org>  Thu, 16 Jan 2014 22:23 +0000
+
 libmojar-perl (1.041) wheezy; urgency=low
 
   * Refactored to be a subclass instead of a fork (Log).
   * Renamed timestamp -> pattern (Log).
 
  -- Nic Sandfield <niczero@cpan.org>  Wed, 15 Jan 2014 20:08 +0000
-
 
 libmojar-perl (1.031) wheezy; urgency=low
 

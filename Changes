@@ -1,4 +1,9 @@
 
+1.052 2014-01-16
+  * Simplified pragmas when loading configuration (Config).
+  * Extended documentation (Config).
+  * Added new package (ClassShare).
+
 1.041 2014-01-15
   * Refactored to be a subclass instead of a fork (Log).
   * Renamed timestamp -> pattern (Log).

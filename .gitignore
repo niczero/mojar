@@ -1,6 +1,6 @@
 *.old
 *.tmp
 .session
-data
-dep
+data/
+dep/
 Makefile
