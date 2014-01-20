@@ -1,4 +1,10 @@
 
+libmojar-perl (1.053) wheezy; urgency=low
+
+  * Reduced version dependency to Mojolicious@3.33.
+
+ -- Nic Sandfield <niczero@cpan.org>  Mon, 20 Jan 2014 22:25 +0000
+
 libmojar-perl (1.052) wheezy; urgency=low
 
   * Simplified pragmas when loading configuration (Config).

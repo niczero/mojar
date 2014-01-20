@@ -1,4 +1,7 @@
 
+1.053 2014-01-20
+  * Reduced version dependency to Mojolicious@3.33.
+
 1.052 2014-01-16
   * Simplified pragmas when loading configuration (Config).
   * Extended documentation (Config).
