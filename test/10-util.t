@@ -3,8 +3,8 @@ use Test::More;
 
 use File::Temp 'tempdir';
 use File::Spec::Functions 'catfile';
-use Mojar::Util qw(dumper hash_or_hashref spurt snakecase unsnakecase
-    transcribe);
+use Mojar::Util qw(check_exists dumper hash_or_hashref spurt snakecase
+    unsnakecase transcribe);
 use Mojo::Util 'slurp';
 
 subtest q{snakecase} => sub {
@@ -103,6 +103,22 @@ subtest q{hash_or_hashref} => sub {
   my $o = bless {} => 'UNIVERSAL';
   ok $o->isa('UNIVERSAL'), 'test object constructed ok';
   is_deeply hash_or_hashref($o), $o, 'object';
+};
+
+subtest q{check_exists} => sub {
+  my $r = [qw(abc xyz)];
+  my $o = { abc => 'ABC', xyz => 'XYZ' };
+  is join('|', check_exists($r, $o)), 'ABC|XYZ', 'arrayref & hashref';
+  is join('|', check_exists('abc', $o)), 'ABC', 'scalar & hashref';
+  my %o = ( abc => 'ABC', xyz => 'XYZ' );
+  is join('|', check_exists($r, %o)), 'ABC|XYZ', 'arrayref & hash';
+  is join('|', check_exists('xyz', %o)), 'XYZ', 'scalar & hash';
+
+  eval { check_exists('xxx', %o) };
+  like $@, qr/^Missing required param \Q(xxx)\E/, 'not found (scalar)';
+  push @$r, qw(hmmm errr);
+  eval { check_exists($r, $o) };
+  like $@, qr/^Missing required param \Q(hmmm)\E/, 'not found (arrayref)';
 };
 
 done_testing();

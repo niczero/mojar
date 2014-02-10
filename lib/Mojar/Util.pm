@@ -1,10 +1,8 @@
 package Mojar::Util;
 use Mojo::Base 'Exporter';
 
-our @EXPORT_OK = qw(
-  dumper hash_or_hashref lc_keys loaded_path merge snakecase spurt transcribe
-  unsnakecase
-);
+our @EXPORT_OK = qw(check_exists dumper hash_or_hashref lc_keys loaded_path
+    merge snakecase spurt transcribe unsnakecase);
 
 use Scalar::Util 'reftype';
 use Storable 'dclone';
@@ -29,7 +27,7 @@ sub dumper {
 
 sub lc_keys {
   my ($hr) = @_;
-  croak q{Missing required hr} unless reftype $hr eq 'HASH';
+  croak q{Missing required hashref} unless reftype $hr eq 'HASH';
   %$hr = map +(lc $_ => $$hr{$_}), keys %$hr;
   return $hr;
 }
@@ -146,6 +144,15 @@ sub hash_or_hashref {
   return { @_ } if @_ % 2 == 0;  # hash
   return $_[0] if ref $_[0] eq 'HASH' or reftype $_[0] eq 'HASH';
   croak sprintf 'Hash not identified (%s)', join ',', @_;
+}
+
+sub check_exists {
+  my $requireds = shift;
+  my $param = hash_or_hashref(@_);
+  $requireds = [$requireds] unless ref $requireds eq 'ARRAY';
+
+  exists $param->{$_} or croak "Missing required param ($_)" for @$requireds;
+  return @$param{@$requireds};
 }
 
 # Private function
@@ -356,8 +363,32 @@ to maintain round trip stability.  (ie Don't try to evaluate its output.)
 Takes care of those cases where you want to handle both hashes and hashrefs.
 Always gives a hashref if it can, otherwise dies.
 
+=head2 check_exists
+
+  sub something {
+    my ($self, %param) = @_;
+    check_exists [qw(dbh log)], %param;
+
+  sub something2 {
+    my $self = shift;
+    my ($dbh, $log) = check_exists [qw(dbh log)], @_;
+
+  sub something3 {
+    my ($self, $param) = @_;
+    my ($dbh) = check_exists 'dbh', $param;
+
+  package MyClass;
+  use Mojar::Util ();
+  sub exists = {
+    my $keys = ref $_[0] eq 'ARRAY' ? $_[0] : [ @_ ];
+    return Mojar::Util::exists($keys, $self);
+  }
+
+Checks that required parameters have been passed.  Takes a string or arrayref of
+strings that are required keys, and a hash or hashref of parameters.  Throws an
+exception if one or more strings do not exist as keys in the parameters;
+otherwise returns the list of parameter values.
+
 =head1 SEE ALSO
 
 L<Mojo::Util>, L<String::Util>, L<Data::Dump>.
-
-=cut

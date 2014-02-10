@@ -1,3 +1,5 @@
+1.062 2014-02-10
+  * Added check_exists (Util).
 
 1.053 2014-01-20
   * Reduced version dependency to Mojolicious@3.33.

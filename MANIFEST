@@ -19,3 +19,4 @@ test/20-log.t
 test/30-class-share.t
 test/manifest.t
 test/pod.t
+test/version.t

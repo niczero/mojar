@@ -1,3 +1,8 @@
+libmojar-perl (1.062) wheezy; urgency=low
+
+  * Added check_exists (Util).
+
+ -- Nic Sandfield <niczero@cpan.org>  Mon, 10 Feb 2014 23:02 +0000
 
 libmojar-perl (1.053) wheezy; urgency=low
 
