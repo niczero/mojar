@@ -37,7 +37,8 @@ use Mojar::Log;
 
 subtest q{load} => sub {
   ok my $log = Mojar::Log->new, 'new log';
-  ok $config = Mojar::Config->new->load('cfg/defaults.conf', $log), 'log';
+  ok $config = Mojar::Config->new->load('cfg/defaults.conf', log => $log),
+      'log';
 };
 
 };

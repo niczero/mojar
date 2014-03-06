@@ -1,3 +1,6 @@
+1.071 2014-03-06
+  * Config methods accept a hash of params (Config).
+
 1.062 2014-02-10
   * Added check_exists (Util).
 

@@ -1,7 +1,7 @@
 package Mojar;
 use Mojo::Base -strict;
 
-our $VERSION = 1.062;
+our $VERSION = 1.071;
 
 1;
 __END__
@@ -15,6 +15,7 @@ Mojar - Integration toolkit
   use Mojar::Util qw(snakecase unsnakecase);
   use Mojar::Cache;
   use Mojar::Log (pattern => '%R');
+  use Mojar::Config;
 
 =head1 DESCRIPTION
 

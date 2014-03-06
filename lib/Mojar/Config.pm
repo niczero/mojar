@@ -1,7 +1,7 @@
 package Mojar::Config;
 use Mojo::Base -base;
 
-our $VERSION = 0.002;
+our $VERSION = 0.021;
 # Adapted from Mojolicious::Plugin::Config (3.57)
 
 use Mojo::Util qw(decode slurp);
@@ -13,14 +13,14 @@ sub croak { require Carp; goto &Carp::croak; }
 # Public methods
 
 sub load {
-  my ($self, $file, $log) = @_;
-  $log->debug(sprintf 'Reading config file (%s)', $file) if defined $log;
+  my ($self, $file, %param) = @_;
+  $param{log}->debug(sprintf 'Reading config file (%s)', $file) if $param{log};
   my $content = decode 'UTF-8', slurp $file;
-  return $self->parse(\$content, $log);
+  return $self->parse(\$content, %param);
 }
 
 sub parse {
-  my ($self, $content_ref, $log) = @_;
+  my ($self, $content_ref, %param) = @_;
 
   # Run Perl code
   my $config = eval sprintf '%s%s%s', 'package Mojar::Config::Sandbox;',
@@ -28,7 +28,7 @@ sub parse {
   croak qq{Failed to load configuration from file: $@} if not $config and $@;
   croak qq{Config file did not return a hash reference.\n}
     unless ref $config eq 'HASH';
-  $log->debug('Config content successfully read') if defined $log;
+  $param{log}->debug('Config content successfully read') if $param{log};
 
   return $config;
 }
@@ -56,6 +56,7 @@ A simple configuration file reader for a configuration written as a perl hash.
   {
     debug => undef,
     expiration => 60 * 60 * 10,
+    graffiti => sprintf('%s and %s', 'love', 'peace'),
     secrets => [qw(where wild things roam)],
     redis => {
       ip => '192.168.1.1',
@@ -70,7 +71,7 @@ The contents are evaluated, so compuatations are valid.
 =head2 load
 
   $hashref = Mojar::Config->load('path/to/file.conf');
-  $hashref = Mojar::Config->load('path/to/file.conf', $log);
+  $hashref = Mojar::Config->load('path/to/file.conf', log => $log);
 
 Loads a perl-ish configuration from the given file path.  In normal usage, this
 is the only method required.  The result is a plain (unblessed) hashref.
@@ -86,16 +87,14 @@ configuration text.
 
 =head1 DEBUGGING
 
-Both methods accept a Mojar::Log/Mojo::Log object as their final argument.  If
+Both methods accept a Mojar::Log/Mojo::Log object in their parameters.  If
 passed a debug-level logger, some debugging statements become available.
 
   my $log = Mojar::Log->new(level => 'debug', path => '/tmp/stuff.log');
-  my $config = Mojar::Config->new->load('/etc/stuff.conf', $log);
+  my $config = Mojar::Config->new->load('/etc/stuff.conf', log => $log);
 
 =head1 SEE ALSO
 
 This is a fork of L<Mojolicious::Plugin::Config> (v3.57) that can be used
 independently of having a Mojolicious app.  So if your code is for a Mojolicious
 app, it makes sense to use the upstream module instead.
-
-=cut

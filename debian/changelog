@@ -1,3 +1,9 @@
+libmojar-perl (1.071) wheezy; urgency=low
+
+  * Config methods accept a hash of params (Config).
+
+ -- Nic Sandfield <niczero@cpan.org>  Thu, 06 Mar 2014 22:43 +0000
+
 libmojar-perl (1.062) wheezy; urgency=low
 
   * Added check_exists (Util).
