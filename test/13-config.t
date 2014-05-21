@@ -33,10 +33,10 @@ SKIP: {
   skip 'set RELEASE_TESTING to enable this test (developer only!)', 1
     unless $ENV{RELEASE_TESTING};
 
-use Mojar::Log;
+use Mojo::Log;
 
 subtest q{load} => sub {
-  ok my $log = Mojar::Log->new, 'new log';
+  ok my $log = Mojo::Log->new, 'new log';
   ok $config = Mojar::Config->new->load('cfg/defaults.conf', log => $log),
       'log';
 };

@@ -1,9 +1,10 @@
 package Mojar::Util;
-use Mojo::Base 'Exporter';
+use Mojo::Base -strict;
 
 our @EXPORT_OK = qw(check_exists dumper hash_or_hashref lc_keys loaded_path
     merge snakecase spurt transcribe unsnakecase);
 
+use Exporter 'import';
 use Scalar::Util 'reftype';
 use Storable 'dclone';
 

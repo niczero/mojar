@@ -1,3 +1,8 @@
+2.001 2014-05-21
+  * Updated to accommodate new Mojo::Log (Log).
+  * Added new package (Config::Ini).
+  * Bumped required version of Mojolicious to 5.00.
+
 1.071 2014-03-06
   * Config methods accept a hash of params (Config).
 
@@ -35,3 +40,14 @@
   * Improved packaging.
   * Extended tests (Log).
   * Fixed bug where use-time params were ignored (Log).
+
+0.020 2012-12-31
+  * Reduced quotes and indentation (Util)
+  * Tweaked .travis.yml
+  * Added LICENSE, MANIFEST.SKIP
+  * Fixed POD bug (Mojar)
+  * Added dumper (Util)
+  * Removed slurp (Util)
+
+0.014 2012-12-21
+  * Added slurp,spurt (Util)
