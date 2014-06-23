@@ -1,18 +1,29 @@
 package Mojar::Util;
 use Mojo::Base -strict;
 
-our @EXPORT_OK = qw(check_exists dumper hash_or_hashref lc_keys loaded_path
-    merge snakecase spurt transcribe unsnakecase);
+our $VERSION = 0.341;
 
+use B;
+use Carp 'croak';
 use Exporter 'import';
 use Scalar::Util 'reftype';
 use Storable 'dclone';
 
-# Private function
-
-sub croak ($) { require Carp; goto &Carp::croak; }
+our @EXPORT_OK = qw(as_bool been_numeric check_exists dumper hash_or_hashref
+    loaded_path lc_keys merge snakecase spurt transcribe unsnakecase);
 
 # Public functions
+
+sub as_bool {
+  my ($val) = shift;
+  return !! $val if been_numeric($val) or not defined $val;
+  $val = lc "$val";
+  return !! 1
+    if $val eq '1' or $val eq 'true' or $val eq 'yes' or $val eq 'on';
+  return !! undef
+    if $val eq '0' or $val eq 'false' or $val eq 'no' or $val eq 'off';
+  return !! $val;
+}
 
 sub dumper {
   no warnings 'once';
@@ -133,12 +144,24 @@ sub loaded_path {
   return undef;
 }
 
-sub spurt {
-  my ($path, @content) = @_;
+sub been_numeric {
+  my $value = shift;
+  # From Mojo::JSON
+  return 1 if B::svref_2object(\$value)->FLAGS & (B::SVp_IOK | B::SVp_NOK)
+      and 0 + $value eq $value and $value * 0 == 0;
+}
+
+sub spurt (@) {
+  my $path = shift;
+  my $lines = ref $_[-1] eq 'ARRAY' ? pop : \@_;
+  my $count = 0;
+
   die qq{Can't open file "$path": $!} unless open my $file, '>', $path;
-  my $string = join '', @content;
-  die qq{Can't write to file "$path": $!} unless $file->syswrite($string);
-  return $string;
+  $file->syswrite('');
+  local $_;
+  $file->syswrite($_), $file->syswrite($/) and ++$count for @$lines;
+  close $file;
+  return $count;
 }
 
 sub hash_or_hashref {

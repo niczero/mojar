@@ -18,7 +18,7 @@ WriteMakefile(
       repository  => 'http://github.com/niczero/mojar',
       bugtracker  => 'http://github.com/niczero/mojar/issues'
     },
-    no_index => {directory => [qw(cfg data test)]}
+    no_index => {directory => [qw(cfg test)]}
   },
   BUILD_REQUIRES => {'Test::More' => 0},
   CONFIGURE_REQUIRES => {'ExtUtils::MakeMaker' => '6.30'},
