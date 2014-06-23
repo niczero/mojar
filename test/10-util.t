@@ -3,9 +3,26 @@ use Test::More;
 
 use File::Temp 'tempdir';
 use File::Spec::Functions 'catfile';
-use Mojar::Util qw(check_exists dumper hash_or_hashref spurt snakecase
+use Mojar::Util qw(as_bool check_exists dumper hash_or_hashref spurt snakecase
     unsnakecase transcribe);
 use Mojo::Util 'slurp';
+
+subtest q{as_bool} => sub {
+  ok ! as_bool(undef), 'undef';
+  ok ! as_bool(0 + 0), '0 expr';
+  ok ! as_bool(''), 'empty string';
+  ok ! as_bool('0'), '0 string';
+  ok ! as_bool('NO'), 'no';
+  ok ! as_bool('False'), 'false';
+  ok ! as_bool('oFF'), 'off';
+
+  ok as_bool('0.00'), '0.00 string';
+  ok as_bool('1'), '1 string';
+  ok as_bool('YeS'), 'yes';
+  ok as_bool('tRUE'), 'true';
+  ok as_bool('ON'), 'on';
+  ok as_bool('0 but true'), '0 but true';
+};
 
 subtest q{snakecase} => sub {
   is +(snakecase 'FooBar'), 'foo_bar', 'FooBar';
@@ -76,10 +93,16 @@ subtest q{transcribe} => sub {
 subtest q{spurt} => sub {
   my $dir = tempdir CLEANUP => 1;
   my $path = catfile $dir, 'test.txt';
-  ok !! spurt $path, "Some\ntext\n";
+  ok !! spurt($path, ''), 'empty string';
+
+  ok !! spurt($path, "Some\ntext"), 'single string';
   is slurp($path), "Some\ntext\n", 'same text back';
-  ok !! spurt $path, "More\n", "lines\n";
+
+  ok !! spurt $path, 'More', 'lines';
   is slurp($path), "More\nlines\n", 'same text back';
+
+  ok !! spurt $path, ['Other', 'lines'];
+  is slurp($path), "Other\nlines\n", 'same text back';
 };
 
 subtest q{dumper} => sub {

@@ -2,8 +2,10 @@ package Mojar::ClassShare;
 use strict;
 use warnings;
 
-our $VERSION = 0.001;
+our $VERSION = 0.011;
 # Adapted from Mojo::Base::attr
+
+use Carp 'croak';
 
 sub import {
   my $class = shift;
@@ -13,10 +15,6 @@ sub import {
     *{"${caller}::have"} = sub { class_attr($caller, @_) };
   }
 }
-
-# Private function
-
-sub croak ($) { require Carp; goto &Carp::croak; }
 
 # Public method
 

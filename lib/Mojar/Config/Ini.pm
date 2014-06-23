@@ -1,16 +1,11 @@
 package Mojar::Config::Ini;
 use Mojo::Base 'Mojar::Config';
 
-our $VERSION = 0.011;
+our $VERSION = 0.021;
 # Adapted from Mojolicious::Plugin::Config (3.57)
 
+use Carp 'croak';
 use Mojo::Util qw(decode slurp);
-
-# Private function
-
-sub croak { require Carp; goto &Carp::croak; }
-
-# Public methods
 
 sub parse {
   my ($self, $content_ref, %param) = @_;
