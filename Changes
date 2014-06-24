@@ -1,3 +1,6 @@
+2.013 2014-06-24
+  * Improved documentation (Util).
+
 2.012 2014-06-23
   * Added as_bool (Util).
   * Added been_numeric (Util).

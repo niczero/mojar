@@ -282,6 +282,26 @@ Miscellaneous utility functions.
 
 =head1 FUNCTIONS
 
+=head2 as_bool
+
+  $boolean = as_bool($val);
+
+Convert arbitrary scalar to a Boolean, intended to accommodate strings
+equivalent to on/off, true/false, yes/no.  The following are true.
+
+  as_bool('ON'), as_bool('true'), as_bool(42), as_bool('Yes'), as_bool('NO!')
+
+The following are false.
+
+  as_bool('off'), as_bool('False'), as_bool(0), as_bool('NO'), as_bool(undef)
+
+=head2 been_numeric
+
+  $probably_a_number = been_numeric($val);
+
+Introspects a flag indicating whether the value has been treated as a number.
+cf: L<Scalar::Util::looks_like_number>.
+
 =head2 snakecase
 
   $snakecase = snakecase $titlecase;
@@ -354,13 +374,15 @@ swap between values, as shown in that last example.
 
   my $written_string = spurt $path, @content;
 
-  spurt '/tmp/test.txt', "Some\ntext\n";
-  spurt '/tmp/test.txt', "More\n", "text\n";  # overwrites previous content
+  spurt '/tmp/test.txt', "Some\ntext";
+  spurt '/tmp/test.txt', 'Replacement', 'text';
+  $lines = spurt '/tmp/test.txt', ['Other', 'text'];  # 2
 
 Similar to L<Mojo::Util>::spurt but with opposite argument order and accepting
-list of content.  If passed a list, it joins the parts together before writing.
+list of content.  After the file path, each argument is written as a line.
+Returns the number of lines written.
 
-  ->syswrite(join '', @content)
+  ->syswrite(join "\n", @content)->syswrite("\n")
 
 =head2 dumper
 
