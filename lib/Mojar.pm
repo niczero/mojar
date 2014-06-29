@@ -1,7 +1,7 @@
 package Mojar;
 use Mojo::Base -strict;
 
-our $VERSION = 2.012;
+our $VERSION = 2.014;
 
 1;
 __END__
@@ -16,6 +16,7 @@ Mojar - Integration toolkit
   use Mojar::Cache;
   use Mojar::Log (pattern => '%R');
   use Mojar::Config;
+  use Mojar::ClassShare;
 
 =head1 DESCRIPTION
 
