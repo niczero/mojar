@@ -50,7 +50,7 @@ Mojar::Log - Simple logger
 
   # Log messages
   $log->debug('Hmmm?');
-  $log->info(q{We're charging per character);
+  $log->info(q{We're charging per character});
   $log->warn('Uh-oh!');
   $log->error(q{You won't believe this});
   $log->fatal('OH NOES!');
