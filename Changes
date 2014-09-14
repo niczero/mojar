@@ -1,3 +1,6 @@
+2.022 2014-09-14
+  * Fixed croak bug (Config).
+
 2.021 2014-08-18
   * Check file exists (Config).
 
