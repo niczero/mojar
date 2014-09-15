@@ -1,7 +1,7 @@
 package Mojar::Log;
 use Mojo::Base 'Mojo::Log';
 
-our $VERSION = 1.001;
+our $VERSION = 1.002;
 
 use Mojo::Util 'encode';
 use POSIX 'strftime';
@@ -21,7 +21,7 @@ sub import {
 
 # Attributes
 
-has pattern => '%Y%m%d %X';
+has pattern => '%Y%m%d %H:%M:%S';
 
 has format => sub {
   my $self = shift; weaken $self; sub {
