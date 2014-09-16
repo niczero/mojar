@@ -1,22 +1,14 @@
-2.023 2014-09-15
+2.024 2014-09-16
+  * Check file exists (Config).
+  * Fixed croak bug (Config).
   * Fixed portability bug (Log).
 
-2.022 2014-09-14
-  * Fixed croak bug (Config).
-
-2.021 2014-08-18
-  * Check file exists (Config).
-
 2.014 2014-06-29
-  * Fixed version (Mojar).
-
-2.013 2014-06-24
-  * Improved documentation (Util).
-
-2.012 2014-06-23
   * Added as_bool (Util).
   * Added been_numeric (Util).
   * Modified spurt (Util).
+  * Improved documentation (Util).
+  * Fixed version (Mojar).
 
 2.001 2014-05-21
   * Updated to accommodate new Mojo::Log (Log).
@@ -30,12 +22,10 @@
   * Added check_exists (Util).
 
 1.053 2014-01-20
-  * Reduced version dependency to Mojolicious@3.33.
-
-1.052 2014-01-16
   * Simplified pragmas when loading configuration (Config).
   * Extended documentation (Config).
   * Added new package (ClassShare).
+  * Reduced version dependency to Mojolicious@3.33.
 
 1.041 2014-01-15
   * Refactored to be a subclass instead of a fork (Log).

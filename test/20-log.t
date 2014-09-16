@@ -29,7 +29,7 @@ subtest q{Basic} => sub {
   like $content, qr/^\d{4}\d{2}\d{2} \d\d:\d\d:\d\d\[error/,
       'uses expected timestamp pattern';
 
-  $log->pattern('[%F %X]');
+  $log->pattern('[%F %H:%M:%S]');
   $log->fatal('Terminal');
   $content = slurp $path;
   like $content, qr/\[\d{4}\-\d\d\-\d\d \d\d:\d\d:\d\d\]\[fatal\] Terminal/,
@@ -51,7 +51,7 @@ subtest q{Helper} => sub {
   my $content = slurp $path;
   like $content, qr/\[info\] A message/, 'contains expected string';
 
-  $log->pattern('[%F %X]');
+  $log->pattern('[%F %H:%M:%S]');
   $log->fatal('Terminal');
   $content = slurp $path;
   like $content, qr/\[\d{4}\-\d\d\-\d\d \d\d:\d\d:\d\d\]\[fatal\] Terminal/,
@@ -73,7 +73,7 @@ subtest q{main} => sub {
   my $content = slurp $path;
   like $content, qr/\[error\] An error/, 'contains expected string';
 
-  $log->pattern('[%F %X]');
+  $log->pattern('[%F %H:%M:%S]');
   $log->fatal('Terminal');
   $content = slurp $path;
   like $content, qr/\[\d{4}\-\d\d\-\d\d \d\d:\d\d:\d\d\]\[fatal\] Terminal/,
