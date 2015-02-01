@@ -1,16 +1,18 @@
 package Mojar::Util;
 use Mojo::Base -strict;
 
-our $VERSION = 0.341;
+our $VERSION = 0.351;
 
 use B;
 use Carp 'croak';
 use Exporter 'import';
+use Mojo::Util 'slurp';
 use Scalar::Util 'reftype';
 use Storable 'dclone';
 
 our @EXPORT_OK = qw(as_bool been_numeric check_exists dumper hash_or_hashref
-    loaded_path lc_keys merge snakecase spurt transcribe unsnakecase);
+    loaded_path lc_keys merge slurp_chomped snakecase spurt transcribe
+    unsnakecase);
 
 # Public functions
 
@@ -43,6 +45,8 @@ sub lc_keys {
   %$hr = map +(lc $_ => $$hr{$_}), keys %$hr;
   return $hr;
 }
+
+sub slurp_chomped { my $a = slurp shift; () while chomp $a; $a }
 
 sub snakecase {
   my ($string, $syllable_sep) = @_;

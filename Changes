@@ -1,3 +1,6 @@
+2.031 2015-02-01
+  * Added slurp_chomped (Util).
+
 2.024 2014-09-16
   * Check file exists (Config).
   * Fixed croak bug (Config).
