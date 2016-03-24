@@ -1,7 +1,7 @@
 package Mojar;
 use Mojo::Base -strict;
 
-our $VERSION = 2.031;
+our $VERSION = 2.041;
 
 1;
 __END__
@@ -47,10 +47,6 @@ Calculate when the next instance should run.
 
 C<nic> at C<#mojo> on C<irc.perl.org>
 
-=head2 Wiki
-
-L<https://github.com/niczero/mojar/wiki>
-
 =head1 RATIONALE
 
 Mojolicious is an awesome web application framework that includes many great
@@ -60,9 +56,9 @@ you closer to connecting to third-party services.
 
 =head1 COPYRIGHT AND LICENCE
 
-Copyright (C) 2008--2012, Sebastian Riedel.
+Copyright (c) 2008--2012 Sebastian Riedel.  All rights reserved.
 
-Copyright (C) 2012--2014, Nic Sandfield.
+Copyright (c) 2012--2016 Nic Sandfield.  All rights reserved.
 
 This program is free software, you can redistribute it and/or modify it under
 the terms of the Artistic License version 2.0.

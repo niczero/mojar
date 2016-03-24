@@ -55,7 +55,7 @@ Mojar::Config::Ini - Ini-style configuration utility for standalone code
 =head1 SYNOPSIS
 
   use Mojar::Config::Ini;
-  my $config = Mojar::Config->load('cfg/defaults.ini');
+  my $config = Mojar::Config::Ini->load('cfg/defaults.ini');
   say $config->{redis}{ip};
 
 =head1 DESCRIPTION

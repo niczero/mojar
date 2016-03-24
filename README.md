@@ -19,6 +19,10 @@ required.
 
     A small set of utility functions.
 
+*   Mojar::Config::Ini
+
+    A lightweight reader of ini-style configuration files.
+
 ## See also
 
 The real content is split out into separate distributions.
@@ -26,7 +30,12 @@ The real content is split out into separate distributions.
 *   Mojar::Mysql
 
     A set of interfaces for working with MySQL databases, of most use to those
-working with more than one server.
+    working with more than one server.
+
+*   Mojar::Oracle
+
+    A db connector for Oracle databases.  [Much less mature than its Mysql
+    sibling.]
 
 *   Mojar::Google::Analytics
 
