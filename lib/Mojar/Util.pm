@@ -90,7 +90,7 @@ sub unsnakecase {
 
 sub transcribe {
   my $string = shift;
-  my $translator = pop if ref $_[-1] eq 'CODE';
+  my $translator = ref $_[-1] eq 'CODE' ? pop : undef;
   return undef unless defined $string;
 
   my $parts = [ $string ];  # arrayref tree with strings at leaves
@@ -373,20 +373,6 @@ As do trailing separators.
 
 Repeatedly replaces a character/string with another character/string.  Can even
 swap between values, as shown in that last example.
-
-=head2 spurt
-
-  my $written_string = spurt $path, @content;
-
-  spurt '/tmp/test.txt', "Some\ntext";
-  spurt '/tmp/test.txt', 'Replacement', 'text';
-  $lines = spurt '/tmp/test.txt', ['Other', 'text'];  # 2
-
-Similar to L<Mojo::Util>::spurt but with opposite argument order and accepting
-list of content.  After the file path, each argument is written as a line.
-Returns the number of lines written.
-
-  ->syswrite(join "\n", @content)->syswrite("\n")
 
 =head2 dumper
 

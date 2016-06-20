@@ -196,5 +196,3 @@ minor extensions to the former with an upgrade path to the latter.
 =head1 SEE ALSO
 
 L<Mojo::Cache>, L<CHI>.
-
-=cut
