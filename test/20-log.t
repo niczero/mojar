@@ -12,7 +12,7 @@ use Mojar::Log (
   level => 'debug',
   path => catdir $dir, 'm.log'
 );
-use Mojo::Util 'slurp';
+use Mojo::File 'path';
 
 subtest q{Basic} => sub {
   my $path = catdir $dir, 'c.log';
@@ -24,14 +24,14 @@ subtest q{Basic} => sub {
   ok -s $path, 'log file contains something';
 
   ok $log->level('warn')->info('INFO')->warn('Chained WARN'), 'Chainable';
-  my $content = slurp $path;
+  my $content = path($path)->slurp;
   like $content, qr/\[error\] An error/, 'contains expected string';
   like $content, qr/^\d{4}\d{2}\d{2} \d\d:\d\d:\d\d\[error/,
       'uses expected timestamp pattern';
 
   $log->pattern('[%F %H:%M:%S]');
   $log->fatal('Terminal');
-  $content = slurp $path;
+  $content = path($path)->slurp;
   like $content, qr/\[\d{4}\-\d\d\-\d\d \d\d:\d\d:\d\d\]\[fatal\] Terminal/,
       'uses expected timestamp pattern';
 
@@ -48,17 +48,17 @@ subtest q{Helper} => sub {
   $log->info('A message');
   ok -f $path, 'log file exists';
   ok -s $path, 'log file contains something';
-  my $content = slurp $path;
+  my $content = path($path)->slurp;
   like $content, qr/\[info\] A message/, 'contains expected string';
 
   $log->pattern('[%F %H:%M:%S]');
   $log->fatal('Terminal');
-  $content = slurp $path;
+  $content = path($path)->slurp;
   like $content, qr/\[\d{4}\-\d\d\-\d\d \d\d:\d\d:\d\d\]\[fatal\] Terminal/,
       'uses expected timestamp pattern';
 
   $log->debug('Debugging');
-  $content = slurp $path;
+  $content = path($path)->slurp;
   unlike $content, qr/\]\[debug\] Debug/, 'log omits irrelevance';
 };
 
@@ -70,17 +70,17 @@ subtest q{main} => sub {
   $log->error('An error');
   ok -f $path, 'log file exists';
   ok -s $path, 'log file contains something';
-  my $content = slurp $path;
+  my $content = path($path)->slurp;
   like $content, qr/\[error\] An error/, 'contains expected string';
 
   $log->pattern('[%F %H:%M:%S]');
   $log->fatal('Terminal');
-  $content = slurp $path;
+  $content = path($path)->slurp;
   like $content, qr/\[\d{4}\-\d\d\-\d\d \d\d:\d\d:\d\d\]\[fatal\] Terminal/,
       'uses expected timestamp pattern';
 
   $log->debug('Debugging');
-  $content = slurp $path;
+  $content = path($path)->slurp;
   like $content, qr/\]\[debug\] Debug/, 'contains expected string';
 };
 

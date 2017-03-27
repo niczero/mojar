@@ -5,7 +5,7 @@ use File::Temp 'tempdir';
 use File::Spec::Functions 'catfile';
 use Mojar::Util qw(as_bool check_exists dumper hash_or_hashref spurt snakecase
     unsnakecase transcribe);
-use Mojo::Util 'slurp';
+use Mojo::File 'path';
 
 subtest q{as_bool} => sub {
   ok ! as_bool(undef), 'undef';
@@ -96,13 +96,13 @@ subtest q{spurt} => sub {
   ok !! spurt($path, ''), 'empty string';
 
   ok !! spurt($path, "Some\ntext"), 'single string';
-  is slurp($path), "Some\ntext\n", 'same text back';
+  is path($path)->slurp, "Some\ntext\n", 'same text back';
 
   ok !! spurt $path, 'More', 'lines';
-  is slurp($path), "More\nlines\n", 'same text back';
+  is path($path)->slurp, "More\nlines\n", 'same text back';
 
   ok !! spurt $path, ['Other', 'lines'];
-  is slurp($path), "Other\nlines\n", 'same text back';
+  is path($path)->slurp, "Other\nlines\n", 'same text back';
 };
 
 subtest q{dumper} => sub {

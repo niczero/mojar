@@ -1,7 +1,7 @@
 package Mojar;
 use Mojo::Base -strict;
 
-our $VERSION = 2.051;
+our $VERSION = 2.101;
 
 1;
 __END__
@@ -58,7 +58,7 @@ you closer to connecting to third-party services.
 
 Copyright (c) 2008--2012 Sebastian Riedel.  All rights reserved.
 
-Copyright (c) 2012--2016 Nic Sandfield.  All rights reserved.
+Copyright (c) 2012--2017 Nic Sandfield.  All rights reserved.
 
 This program is free software, you can redistribute it and/or modify it under
 the terms of the Artistic License version 2.0.

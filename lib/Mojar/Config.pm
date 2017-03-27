@@ -1,17 +1,18 @@
 package Mojar::Config;
 use Mojo::Base -base;
 
-our $VERSION = 0.042;
+our $VERSION = 0.051;
 # Adapted from Mojolicious::Plugin::Config (3.57)
 
 use Carp 'croak';
-use Mojo::Util qw(decode slurp);
+use Mojo::File 'path';
+use Mojo::Util 'decode';
 
 sub load {
   my ($self, $file, %param) = @_;
   $param{log}->debug(sprintf 'Reading config file (%s)', $file) if $param{log};
   croak "Failed to find file ($file)" unless -f $file or -l $file;
-  my $content = decode 'UTF-8', slurp $file;
+  my $content = decode 'UTF-8', path($file)->slurp;
   return $self->parse(\$content, %param);
 }
 

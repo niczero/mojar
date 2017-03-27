@@ -1,3 +1,7 @@
+2.101 2017-03-27
+  - Upgrade to use Mojo::File (Config).
+  - Upgrade to use Mojo::File (Util).
+
 2.051 2016-06-20
   - Avoid conditional declaration (Util).
 

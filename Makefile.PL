@@ -12,7 +12,7 @@ WriteMakefile(
   LICENSE      => 'artistic_2',
   META_MERGE   => {
     no_index  => {directory => ['test']},
-    requires  => {perl => 5.010001},
+    requires  => {perl => 5.010_001},
     resources => {
       homepage   => 'http://niczero.github.io/mojar',
       license    => 'http://www.opensource.org/licenses/artistic-license-2.0',
@@ -23,7 +23,7 @@ WriteMakefile(
   },
   BUILD_REQUIRES => {'Test::More' => 0},
   CONFIGURE_REQUIRES => {'ExtUtils::MakeMaker' => 6.3},
-  PREREQ_PM => {Mojolicious => 5},
+  PREREQ_PM => {Mojolicious => 7.15},
   EXE_FILES => [],
   test => {TESTS => 'test/*.t'}
 );
