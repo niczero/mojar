@@ -1,3 +1,6 @@
+2.211 2017-06-02
+  - Modify tests to accommodate Windows (log).
+
 2.201 2017-05-22
   - Extend slurp_chomped to take path components (Util).
 

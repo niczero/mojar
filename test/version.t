@@ -37,24 +37,6 @@ sub version_from_changefile {
   return undef;
 }
 
-sub version_from_debian {
-  my $changefile = shift // 'debian/changelog';
-  unless (-f $changefile and -r $changefile) {
-    diag "Failed to find/read changefile ($changefile)";
-    fail 'version_from_debian';
-  }
-  my $content = decode 'UTF-8', Mojo::File->new($changefile)->slurp;
-  return $1 if $content =~ /^[\w\-]+\s+\(([\d\.]+)\)\s+\w+;\s+urgency=low$/m;
-  return undef;
-}
-
 cmp_ok version_from_module, '==', version_from_changefile, 'versions match';
-
-SKIP: {
-  my $changelog = 'debian/changelog';
-  skip 'No debian changelog to test', 1 unless -f $changelog;
-  cmp_ok version_from_debian($changelog), '==', version_from_changefile,
-      'versions match';
-};
 
 done_testing();
